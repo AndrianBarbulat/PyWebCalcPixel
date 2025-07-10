@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Browser Calculator</title>
+    <title>PyCalc - Python Calculator</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -9,8 +9,16 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #306998 0%, #FFD43B 100%);
             margin: 0;
+        }
+        
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 700px;
+            width: 100%;
+            padding: 20px;
         }
         
         .calculator {
@@ -18,7 +26,56 @@
             border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             padding: 20px;
-            width: 300px;
+            flex: 2;
+        }
+        
+        .history-panel {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding: 20px;
+            flex: 1;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .history-panel h3 {
+            margin-top: 0;
+            color: #306998;
+            border-bottom: 2px solid #FFD43B;
+            padding-bottom: 10px;
+        }
+        
+        .history-item {
+            padding: 8px;
+            margin: 5px 0;
+            background: #f0f0f0;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .history-item:hover {
+            background: #FFD43B;
+            transform: translateX(-5px);
+        }
+        
+        .clear-history {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            background: #306998;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .clear-history:hover {
+            background: #1e4d7a;
         }
         
         #display {
@@ -31,6 +88,7 @@
             border: 2px solid #ddd;
             border-radius: 5px;
             box-sizing: border-box;
+            font-family: monospace;
         }
         
         .buttons {
@@ -47,6 +105,7 @@
             cursor: pointer;
             background: #f0f0f0;
             transition: all 0.3s;
+            font-family: 'Arial', sans-serif;
         }
         
         button:hover {
@@ -55,51 +114,86 @@
         }
         
         .operator {
-            background: #ff9800;
-            color: white;
+            background: #FFD43B;
+            color: #306998;
+            font-weight: bold;
         }
         
         .operator:hover {
-            background: #f57c00;
+            background: #f0c000;
         }
         
         .equal {
-            background: #4caf50;
+            background: #306998;
             color: white;
             grid-column: span 2;
         }
         
         .equal:hover {
-            background: #45a049;
+            background: #1e4d7a;
+        }
+        
+        .python-badge {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #306998;
+            font-weight: bold;
+        }
+        
+        .python-badge span {
+            background: #FFD43B;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <div class="calculator">
-        <input type="text" id="display" readonly>
+    <div class="container">
+        <!-- Calculator -->
+        <div class="calculator">
+            <div class="python-badge">
+                <span>🐍 PyCalc</span>
+            </div>
+            
+            <input type="text" id="display" readonly>
+            
+            <div class="buttons">
+                <button onclick="appendToDisplay('7')">7</button>
+                <button onclick="appendToDisplay('8')">8</button>
+                <button onclick="appendToDisplay('9')">9</button>
+                <button class="operator" onclick="appendToDisplay('/')">÷</button>
+                
+                <button onclick="appendToDisplay('4')">4</button>
+                <button onclick="appendToDisplay('5')">5</button>
+                <button onclick="appendToDisplay('6')">6</button>
+                <button class="operator" onclick="appendToDisplay('*')">×</button>
+                
+                <button onclick="appendToDisplay('1')">1</button>
+                <button onclick="appendToDisplay('2')">2</button>
+                <button onclick="appendToDisplay('3')">3</button>
+                <button class="operator" onclick="appendToDisplay('-')">−</button>
+                
+                <button onclick="appendToDisplay('0')">0</button>
+                <button onclick="appendToDisplay('.')">.</button>
+                <button onclick="clearDisplay()">C</button>
+                <button class="operator" onclick="appendToDisplay('+')">+</button>
+                
+                <button class="equal" onclick="calculate()">=</button>
+            </div>
+        </div>
         
-        <div class="buttons">
-            <button onclick="appendToDisplay('7')">7</button>
-            <button onclick="appendToDisplay('8')">8</button>
-            <button onclick="appendToDisplay('9')">9</button>
-            <button class="operator" onclick="appendToDisplay('/')">÷</button>
-            
-            <button onclick="appendToDisplay('4')">4</button>
-            <button onclick="appendToDisplay('5')">5</button>
-            <button onclick="appendToDisplay('6')">6</button>
-            <button class="operator" onclick="appendToDisplay('*')">×</button>
-            
-            <button onclick="appendToDisplay('1')">1</button>
-            <button onclick="appendToDisplay('2')">2</button>
-            <button onclick="appendToDisplay('3')">3</button>
-            <button class="operator" onclick="appendToDisplay('-')">−</button>
-            
-            <button onclick="appendToDisplay('0')">0</button>
-            <button onclick="appendToDisplay('.')">.</button>
-            <button onclick="clearDisplay()">C</button>
-            <button class="operator" onclick="appendToDisplay('+')">+</button>
-            
-            <button class="equal" onclick="calculate()">=</button>
+        <!-- History Panel -->
+        <div class="history-panel">
+            <h3>📋 History</h3>
+            <div id="history-list">
+                {% for item in history %}
+                    <div class="history-item" onclick="useHistory('{{ item.split(' = ')[0] }}')">
+                        {{ item }}
+                    </div>
+                {% endfor %}
+            </div>
+            <button class="clear-history" onclick="clearHistory()">Clear History</button>
         </div>
     </div>
 
@@ -110,6 +204,23 @@
         
         function clearDisplay() {
             document.getElementById('display').value = '';
+        }
+        
+        function useHistory(expression) {
+            document.getElementById('display').value = expression;
+        }
+        
+        function updateHistory(historyItems) {
+            const historyList = document.getElementById('history-list');
+            historyList.innerHTML = '';
+            
+            historyItems.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.onclick = () => useHistory(item.split(' = ')[0]);
+                div.textContent = item;
+                historyList.appendChild(div);
+            });
         }
         
         function calculate() {
@@ -130,7 +241,20 @@
                     document.getElementById('display').value = data.error;
                 } else {
                     document.getElementById('display').value = data.result;
+                    if (data.history) {
+                        updateHistory(data.history);
+                    }
                 }
+            });
+        }
+        
+        function clearHistory() {
+            fetch('/clear-history', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateHistory(data.history);
             });
         }
         
@@ -143,6 +267,8 @@
                 calculate();
             } else if (key === 'Escape') {
                 clearDisplay();
+            } else if (key === 'Delete') {
+                clearHistory();
             }
         });
     </script>
