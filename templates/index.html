@@ -1,178 +1,283 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PyCalc - Python Calculator</title>
+    <title>PyCalc - Pixel Calculator</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Press Start 2P', cursive;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #306998 0%, #FFD43B 100%);
+            background: #4a4a4a;
             margin: 0;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
         }
         
         .container {
             display: flex;
             gap: 20px;
-            max-width: 700px;
+            max-width: 800px;
             width: 100%;
             padding: 20px;
         }
         
+        /* Pixel art effect for all elements */
+        .calculator, .history-panel {
+            background: #d3d3d3;
+            border: 4px solid #2c2c2c;
+            image-rendering: pixelated;
+            box-shadow: 8px 8px 0 #1a1a1a;
+        }
+        
         .calculator {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             padding: 20px;
             flex: 2;
         }
         
         .history-panel {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             padding: 20px;
             flex: 1;
             max-height: 400px;
             overflow-y: auto;
+            background: #c0c0c0;
         }
         
         .history-panel h3 {
             margin-top: 0;
-            color: #306998;
-            border-bottom: 2px solid #FFD43B;
-            padding-bottom: 10px;
+            color: #2c2c2c;
+            font-size: 14px;
+            text-align: center;
+            border-bottom: 4px solid #2c2c2c;
+            padding-bottom: 15px;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 0 #999999;
         }
         
         .history-item {
-            padding: 8px;
-            margin: 5px 0;
-            background: #f0f0f0;
-            border-radius: 5px;
-            font-family: monospace;
-            font-size: 14px;
+            padding: 12px 8px;
+            margin: 10px 0;
+            background: #e8e8e8;
+            border: 3px solid #2c2c2c;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            color: #2c2c2c;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.1s step-end;
+            box-shadow: 4px 4px 0 #666666;
+            word-break: break-all;
         }
         
         .history-item:hover {
-            background: #FFD43B;
-            transform: translateX(-5px);
+            background: #ff9933;
+            color: #2c2c2c;
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 #666666;
+            border-color: #ff9933;
         }
         
         .clear-history {
             width: 100%;
-            padding: 8px;
-            margin-top: 10px;
-            background: #306998;
-            color: white;
-            border: none;
-            border-radius: 5px;
+            padding: 12px;
+            margin-top: 15px;
+            background: #ff9933;
+            color: #2c2c2c;
+            border: 3px solid #2c2c2c;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
             cursor: pointer;
-            font-size: 14px;
+            box-shadow: 4px 4px 0 #666666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         .clear-history:hover {
-            background: #1e4d7a;
+            background: #ffb366;
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 #666666;
         }
         
         #display {
             width: 100%;
-            height: 60px;
-            font-size: 24px;
+            height: 70px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 20px;
             text-align: right;
-            margin-bottom: 15px;
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border: 4px solid #2c2c2c;
+            color: #2c2c2c;
             box-sizing: border-box;
-            font-family: monospace;
+            box-shadow: inset 4px 4px 0 #999999;
+            letter-spacing: 2px;
         }
         
         .buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 12px;
         }
         
         button {
-            padding: 15px;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            padding: 18px 5px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 16px;
+            border: 3px solid #2c2c2c;
             background: #f0f0f0;
-            transition: all 0.3s;
-            font-family: 'Arial', sans-serif;
+            color: #2c2c2c;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 #666666;
+            transition: all 0.1s step-end;
+            text-transform: uppercase;
+            image-rendering: pixelated;
         }
         
         button:hover {
-            background: #ddd;
-            transform: scale(1.05);
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 #666666;
+            background: #ffffff;
+        }
+        
+        button:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0 #666666;
         }
         
         .operator {
-            background: #FFD43B;
-            color: #306998;
-            font-weight: bold;
+            background: #2c2c2c;
+            color: #ff9933;
+            border-color: #ff9933;
         }
         
         .operator:hover {
-            background: #f0c000;
+            background: #404040;
+            color: #ffb366;
         }
         
         .equal {
-            background: #306998;
-            color: white;
+            background: #ff9933;
+            color: #2c2c2c;
             grid-column: span 2;
+            border-color: #2c2c2c;
         }
         
         .equal:hover {
-            background: #1e4d7a;
+            background: #ffb366;
         }
         
         .python-badge {
             text-align: center;
-            margin-bottom: 10px;
-            color: #306998;
-            font-weight: bold;
+            margin-bottom: 20px;
         }
         
         .python-badge span {
-            background: #FFD43B;
-            padding: 3px 10px;
-            border-radius: 15px;
-            font-size: 14px;
+            background: #2c2c2c;
+            color: #ff9933;
+            padding: 8px 15px;
+            border: 3px solid #ff9933;
+            font-size: 12px;
+            letter-spacing: 2px;
+            box-shadow: 4px 4px 0 #666666;
+            display: inline-block;
+        }
+        
+        /* Pixelated scrollbar */
+        .history-panel::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .history-panel::-webkit-scrollbar-track {
+            background: #e8e8e8;
+            border: 2px solid #2c2c2c;
+        }
+        
+        .history-panel::-webkit-scrollbar-thumb {
+            background: #ff9933;
+            border: 2px solid #2c2c2c;
+        }
+        
+        .history-panel::-webkit-scrollbar-thumb:hover {
+            background: #ffb366;
+        }
+        
+        /* Terminal-style cursor blink */
+        #display {
+            caret-color: #ff9933;
+            animation: blink 1s step-end infinite;
+        }
+        
+        @keyframes blink {
+            50% {
+                border-color: #ff9933;
+            }
+        }
+        
+        /* Vintage paper texture */
+        .calculator, .history-panel {
+            background-image: 
+                linear-gradient(45deg, #d3d3d3 2px, transparent 2px),
+                linear-gradient(-45deg, #d3d3d3 2px, transparent 2px);
+            background-size: 4px 4px;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 700px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            button {
+                padding: 15px 3px;
+                font-size: 14px;
+            }
+            
+            #display {
+                font-size: 16px;
+                height: 60px;
+            }
+        }
+
+        .history-item::before {
+            content: ">";
+            color: #ff9933;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        .history-item {
+            padding-left: 15px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Calculator -->
+        <!-- Pixel Calculator -->
         <div class="calculator">
             <div class="python-badge">
-                <span>🐍 PyCalc</span>
+                <span>🐍 RETRO PY</span>
             </div>
             
-            <input type="text" id="display" readonly>
+            <input type="text" id="display" readonly value="0">
             
             <div class="buttons">
                 <button onclick="appendToDisplay('7')">7</button>
                 <button onclick="appendToDisplay('8')">8</button>
                 <button onclick="appendToDisplay('9')">9</button>
-                <button class="operator" onclick="appendToDisplay('/')">÷</button>
+                <button class="operator" onclick="appendToDisplay('/')">/</button>
                 
                 <button onclick="appendToDisplay('4')">4</button>
                 <button onclick="appendToDisplay('5')">5</button>
                 <button onclick="appendToDisplay('6')">6</button>
-                <button class="operator" onclick="appendToDisplay('*')">×</button>
+                <button class="operator" onclick="appendToDisplay('*')">*</button>
                 
                 <button onclick="appendToDisplay('1')">1</button>
                 <button onclick="appendToDisplay('2')">2</button>
                 <button onclick="appendToDisplay('3')">3</button>
-                <button class="operator" onclick="appendToDisplay('-')">−</button>
+                <button class="operator" onclick="appendToDisplay('-')">-</button>
                 
                 <button onclick="appendToDisplay('0')">0</button>
                 <button onclick="appendToDisplay('.')">.</button>
@@ -185,7 +290,7 @@
         
         <!-- History Panel -->
         <div class="history-panel">
-            <h3>📋 History</h3>
+            <h3>📟 HISTORY</h3>
             <div id="history-list">
                 {% for item in history %}
                     <div class="history-item" onclick="useHistory('{{ item.split(' = ')[0] }}')">
@@ -193,17 +298,22 @@
                     </div>
                 {% endfor %}
             </div>
-            <button class="clear-history" onclick="clearHistory()">Clear History</button>
+            <button class="clear-history" onclick="clearHistory()">⌫ CLEAR</button>
         </div>
     </div>
 
     <script>
         function appendToDisplay(value) {
-            document.getElementById('display').value += value;
+            const display = document.getElementById('display');
+            if (display.value === '0' && value !== '.') {
+                display.value = value;
+            } else {
+                display.value += value;
+            }
         }
         
         function clearDisplay() {
-            document.getElementById('display').value = '';
+            document.getElementById('display').value = '0';
         }
         
         function useHistory(expression) {
@@ -218,7 +328,7 @@
                 const div = document.createElement('div');
                 div.className = 'history-item';
                 div.onclick = () => useHistory(item.split(' = ')[0]);
-                div.textContent = item;
+                div.innerHTML = item;
                 historyList.appendChild(div);
             });
         }
@@ -226,7 +336,7 @@
         function calculate() {
             const expression = document.getElementById('display').value;
             
-            if (!expression) return;
+            if (!expression || expression === '0') return;
             
             fetch('/calculate', {
                 method: 'POST',
@@ -238,7 +348,10 @@
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
-                    document.getElementById('display').value = data.error;
+                    document.getElementById('display').value = 'ERROR';
+                    setTimeout(() => {
+                        document.getElementById('display').value = '0';
+                    }, 1000);
                 } else {
                     document.getElementById('display').value = data.result;
                     if (data.history) {
@@ -261,7 +374,15 @@
         // Keyboard support
         document.addEventListener('keydown', function(event) {
             const key = event.key;
-            if ('0123456789+-*/.'.includes(key)) {
+            const display = document.getElementById('display');
+            
+            if ('0123456789'.includes(key)) {
+                if (display.value === '0') {
+                    display.value = key;
+                } else {
+                    appendToDisplay(key);
+                }
+            } else if ('+-*/.'.includes(key)) {
                 appendToDisplay(key);
             } else if (key === 'Enter') {
                 calculate();
@@ -269,6 +390,13 @@
                 clearDisplay();
             } else if (key === 'Delete') {
                 clearHistory();
+            } else if (key === 'Backspace') {
+                display.value = display.value.slice(0, -1) || '0';
+            }
+            
+            // Prevent default for calculator keys
+            if ('0123456789+-*/.'.includes(key) || key === 'Enter' || key === 'Escape') {
+                event.preventDefault();
             }
         });
     </script>
