@@ -26,5 +26,5 @@ Feel free to reach out with questions, suggestions, or just to say hi! 😊
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/pycalc.git
+   git clone https://github.com/AndrianBarbulat/PyWebCalcPixel.git
    cd pycalc
