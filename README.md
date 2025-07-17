@@ -2,6 +2,8 @@
 
 A stylish, retro-themed calculator built with Python (Flask) that features a pixel-art interface and calculation history. Perform basic arithmetic operations with a nostalgic 80s/90s computer terminal aesthetic.
 
+![Screenshot of Calculator](assets/screenshot.png)
+
 ## ✨ Features
 
 - **🖩 Basic Operations**: Addition, subtraction, multiplication, division
