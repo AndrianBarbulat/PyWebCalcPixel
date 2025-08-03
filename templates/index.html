@@ -6,7 +6,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Pixel Calculator -->
         <div class="calculator">
             <div class="python-badge">
                 <span>🐍 PyWebCalcPixel</span>
@@ -39,7 +38,6 @@
             </div>
         </div>
         
-        <!-- History Panel -->
         <div class="history-panel">
             <h3>📟 HISTORY</h3>
             <div id="history-list">
@@ -54,8 +52,36 @@
     </div>
 
     <script>
+        const operators = '+-*/';
+        
         function appendToDisplay(value) {
             const display = document.getElementById('display');
+            const currentValue = display.value;
+            const lastChar = currentValue.slice(-1);
+            
+            // Prevent multiple operators in a row
+            if (operators.includes(value) && operators.includes(lastChar)) {
+                return;
+            }
+            
+            // Prevent starting with operator (except minus for negative numbers)
+            if (currentValue === '0' && operators.includes(value) && value !== '-') {
+                return;
+            }
+            
+            // Handle decimal points
+            if (value === '.') {
+                // Get the current number being typed
+                const parts = currentValue.split(/[+\-*/]/);
+                const currentNumber = parts[parts.length - 1];
+                
+                // Prevent multiple decimals in the same number
+                if (currentNumber.includes('.')) {
+                    return;
+                }
+            }
+            
+            // Update display
             if (display.value === '0' && value !== '.') {
                 display.value = value;
             } else {
@@ -88,6 +114,16 @@
             const expression = document.getElementById('display').value;
             
             if (!expression || expression === '0') return;
+            
+            // Final validation before sending
+            const lastChar = expression.slice(-1);
+            if (operators.includes(lastChar)) {
+                document.getElementById('display').value = 'ERROR';
+                setTimeout(() => {
+                    document.getElementById('display').value = '0';
+                }, 1000);
+                return;
+            }
             
             fetch('/calculate', {
                 method: 'POST',
@@ -122,10 +158,11 @@
             });
         }
         
-        // Keyboard support
         document.addEventListener('keydown', function(event) {
             const key = event.key;
             const display = document.getElementById('display');
+            const currentValue = display.value;
+            const lastChar = currentValue.slice(-1);
             
             if ('0123456789'.includes(key)) {
                 if (display.value === '0') {
@@ -133,8 +170,18 @@
                 } else {
                     appendToDisplay(key);
                 }
-            } else if ('+-*/.'.includes(key)) {
-                appendToDisplay(key);
+            } else if ('+-*/'.includes(key)) {
+                // Prevent multiple operators in a row via keyboard
+                if (!operators.includes(lastChar)) {
+                    appendToDisplay(key);
+                }
+            } else if (key === '.') {
+                // Prevent multiple decimals
+                const parts = currentValue.split(/[+\-*/]/);
+                const currentNumber = parts[parts.length - 1];
+                if (!currentNumber.includes('.')) {
+                    appendToDisplay(key);
+                }
             } else if (key === 'Enter') {
                 calculate();
             } else if (key === 'Escape') {
@@ -145,7 +192,6 @@
                 display.value = display.value.slice(0, -1) || '0';
             }
             
-            // Prevent default for calculator keys
             if ('0123456789+-*/.'.includes(key) || key === 'Enter' || key === 'Escape') {
                 event.preventDefault();
             }
