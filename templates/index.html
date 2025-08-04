@@ -59,14 +59,17 @@
             const currentValue = display.value;
             const lastChar = currentValue.slice(-1);
             
-            // Prevent multiple operators in a row
-            if (operators.includes(value) && operators.includes(lastChar)) {
-                return;
-            }
-            
-            // Prevent starting with operator (except minus for negative numbers)
-            if (currentValue === '0' && operators.includes(value) && value !== '-') {
-                return;
+            // Handle operator replacement
+            if (operators.includes(value)) {
+                if (operators.includes(lastChar)) {
+                    // Replace the last operator with the new one
+                    display.value = currentValue.slice(0, -1) + value;
+                    return;
+                }
+                // Prevent starting with operator (except minus for negative numbers)
+                if (currentValue === '0' && value !== '-') {
+                    return;
+                }
             }
             
             // Handle decimal points
@@ -171,8 +174,10 @@
                     appendToDisplay(key);
                 }
             } else if ('+-*/'.includes(key)) {
-                // Prevent multiple operators in a row via keyboard
-                if (!operators.includes(lastChar)) {
+                // Handle operator replacement via keyboard
+                if (operators.includes(lastChar)) {
+                    display.value = currentValue.slice(0, -1) + key;
+                } else {
                     appendToDisplay(key);
                 }
             } else if (key === '.') {
